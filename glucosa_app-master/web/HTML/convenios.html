@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Farmacias y Convenios</title>
+    
+    <!-- Leaflet CSS para el mapa -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" /> 
+    
+    <link rel="stylesheet" href="../CSS/style_convenios.css"> 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+</head>
+<body>
+    <div class="main-container">
+        <div class="list-container-convenios">
+            <section class="map-container">
+                <!-- Cambiado de img placeholder a div para mapa real -->
+                <div id="map-container" style="height: 400px; width: 100%; border-radius: 8px; margin-bottom: 20px;">
+                </div>
+            </section>
+
+            <section class="list-section">
+                <h3>Lista de Farmacias y Promociones</h3>
+                <ul class="list-pharmacy" id="pharmacy-list-content">
+                    <li class="pharmacy-item">Cargando farmacias...</li>
+                </ul>
+            </section>
+        </div>
+
+        <div class="form-container">
+            <h3>Registrar Nueva Farmacia</h3>
+            <form id="new-pharmacy-form">
+                <label for="farmacia-nombre">Nombre de la Farmacia:</label>
+                <input type="text" id="farmacia-nombre" placeholder="Ej: Farmacias del Ahorro - Central" required>
+
+                <label for="farmacia-direccion">Dirección:</label>
+                <input type="text" id="farmacia-direccion" placeholder="Ej: Av. Juárez #123, Col. Centro" required>
+                
+                <!-- NUEVO CAMPO: Coordenadas Manuales -->
+                <label for="farmacia-coordenadas">Coordenadas (Opcional, Latitud,Longitud):</label>
+                <input type="text" id="farmacia-coordenadas" placeholder="Ej: 19.4326, -99.1332">
+
+                <label for="farmacia-telefono">Teléfono:</label>
+                <input type="text" id="farmacia-telefono" placeholder="Ej: 5512345678">
+
+                <label for="farmacia-promociones">Promociones (Separa cada promoción con una coma):</label>
+                <textarea id="farmacia-promociones" rows="4" placeholder="Ej: 50% de descuento en electrolitos, 2x1 en proteína, Consulta gratis los martes"></textarea>
+
+                <button type="submit" id="save-pharmacy-btn">Guardar Farmacia</button>
+                <p id="form-message" class="message"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Leaflet JS para el mapa -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="../JS/scripts/script_convenios.js"></script>
+    <script src="../JS/backendConvenios.js"></script>
+</body>
+</html>

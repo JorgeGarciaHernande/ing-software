@@ -1,0 +1,315 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #43cea2 0%, #185a9d 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.main-container {
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+.header {
+    background: white;
+    padding: 20px 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header h1 {
+    color: #43cea2;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.btn-back {
+    background: #43cea2;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-back:hover {
+    background: #3ab890;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(67, 206, 162, 0.4);
+}
+
+/* Selector de Paciente */
+.selector-patient-container {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    margin-bottom: 30px;
+}
+
+.selector-label {
+    display: block;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+.patient-select-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: all 0.3s;
+    background: white;
+}
+
+.patient-select-control:focus {
+    outline: none;
+    border-color: #43cea2;
+    box-shadow: 0 0 0 3px rgba(67, 206, 162, 0.1);
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+@media (max-width: 1200px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Panel de Nueva Dieta */
+.new-diet-panel {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.panel-subtitle {
+    color: #43cea2;
+    font-size: 22px;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 3px solid #43cea2;
+}
+
+.new-diet-form label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 8px;
+    margin-top: 15px;
+}
+
+.new-diet-form input,
+.new-diet-form select,
+.new-diet-form textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s;
+    font-family: inherit;
+}
+
+.new-diet-form input:focus,
+.new-diet-form select:focus,
+.new-diet-form textarea:focus {
+    outline: none;
+    border-color: #43cea2;
+    box-shadow: 0 0 0 3px rgba(67, 206, 162, 0.1);
+}
+
+.new-diet-form textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.meal-section {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+    border-left: 4px solid #43cea2;
+}
+
+.meal-section h3 {
+    color: #43cea2;
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.new-diet-form button {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #43cea2 0%, #185a9d 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.3s;
+}
+
+.new-diet-form button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(67, 206, 162, 0.4);
+}
+
+.new-diet-form button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Historial de Dietas */
+.diet-history-container {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.diet-history-container h2 {
+    color: #43cea2;
+    font-size: 22px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 3px solid #43cea2;
+}
+
+.diet-list {
+    list-style: none;
+}
+
+.diet-item {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    border-left: 4px solid #43cea2;
+    transition: all 0.3s;
+}
+
+.diet-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.diet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.diet-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+}
+
+.diet-date {
+    font-size: 13px;
+    color: #666;
+    background: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+
+.diet-details {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.8;
+}
+
+.diet-details strong {
+    color: #43cea2;
+}
+
+.meal-info {
+    margin-top: 10px;
+    padding: 12px;
+    background: white;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.meal-info p {
+    margin: 5px 0;
+}
+
+.message {
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 15px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.message.success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.message.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.loading {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: #999;
+}
+
+.empty-state svg {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 15px;
+    opacity: 0.5;
+}
+
+.calories-badge {
+    display: inline-block;
+    background: #43cea2;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-left: 10px;
+}

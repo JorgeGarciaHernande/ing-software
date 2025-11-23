@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mis Pacientes</title>
+    <link rel="stylesheet" href="../CSS/style_mis_pacientes.css">
+
+</head>
+
+<body>
+    <div>
+        <header class="header">
+            <h2>Mis pacientes</h2>
+            <div>
+                <button disabled id="search_button">Buscar (Próx.)</button>
+            </div>
+        </header>
+    </div>
+
+    <div class="grid-container" id="pacientes-container">
+        <p id="loading-message" class="loading">Cargando pacientes...</p>
+    </div>
+
+    <section class="inactive-section">
+        <h2>Pacientes Inactivos (Archivados)</h2>
+        <div class="grid-container" id="inactivos-container" style="padding: 0; margin-top: 0;">
+            <p id="loading-inactivos" class="loading" style="display:none; color:#dc3545;">Cargando...</p>
+        </div>
+    </section>
+
+    <dialog id="patient-profile-modal">
+        <div class="profile-modal-content">
+            <span class="close-profile-modal-btn" id="close-profile-modal">&times;</span>
+            <h2 id="profile-nombre">Cargando...</h2>
+
+            <input type="hidden" id="profile-paciente-id" value="">
+
+            <p>Datos Personales</p>
+            <div class="profile-data-row">
+                <span class="profile-data-label">Correo Electrónico:</span>
+                <span class="profile-data-value" id="profile-correo"></span>
+            </div>
+            <div class="profile-data-row">
+                <span class="profile-data-label">Fecha de Nacimiento:</span>
+                <span class="profile-data-value" id="profile-fecha-nacimiento"></span>
+            </div>
+            <div class="profile-data-row">
+                <span class="profile-data-label">Edad:</span>
+                <span class="profile-data-value" id="profile-edad"></span>
+            </div>
+            <hr>
+            <p>Datos Médicos</p>
+            <div class="profile-data-row">
+                <span class="profile-data-label">ÚLTIMA Glucosa (Paciente):</span>
+                <span class="profile-data-value" id="profile-glucosa"></span>
+            </div>
+            <div class="profile-data-row">
+                <span class="profile-data-label">Estado Glucosa:</span>
+                <span class="profile-data-value" id="profile-estado"></span>
+            </div>
+            <hr>
+            <p>Datos Físicos</p>
+            <div class="profile-data-row">
+                <span class="profile-data-label">Altura:</span>
+                <span class="profile-data-value" id="profile-altura"></span>
+            </div>
+            <div class="profile-data-row">
+                <span class="profile-data-label">Peso:</span>
+                <span class="profile-data-value" id="profile-peso"></span>
+            </div>
+
+            <div id="graph-container"
+                style="padding: 10px; border: 1px solid #ddd; margin-top: 25px; margin-bottom: 20px;">
+                <h3>HISTORIAL DE MEDICIONES</h3>
+                <canvas id="glucoseChart" width="500" height="200" style="display: none;"></canvas>
+            </div>
+
+            <hr>
+            <h3>Filtro de Historial para PDF</h3>
+
+            <div class="filter-options" id="date-filter-options">
+                <div class="filter-option">
+                    <input type="radio" id="filter-week" name="date-range" value="week" checked
+                        onclick="handleFilterChange('week')">
+                    <label for="filter-week">Última Semana</label>
+                </div>
+                <div class="filter-option">
+                    <input type="radio" id="filter-month" name="date-range" value="month"
+                        onclick="handleFilterChange('month')">
+                    <label for="filter-month">Último Mes</label>
+                </div>
+                <div class="filter-option">
+                    <input type="radio" id="filter-year" name="date-range" value="year"
+                        onclick="handleFilterChange('year')">
+                    <label for="filter-year">Último Año</label>
+                </div>
+                <div class="filter-option">
+                    <input type="radio" id="filter-all" name="date-range" value="all"
+                        onclick="handleFilterChange('all')">
+                    <label for="filter-all">Todo el Historial</label>
+                </div>
+                <div class="filter-option">
+                    <input type="radio" id="filter-custom" name="date-range" value="custom"
+                        onclick="handleFilterChange('custom')">
+                    <label for="filter-custom">Personalizado</label>
+                </div>
+            </div>
+
+            <div class="date-input-group">
+                <div>
+                    <label for="filter-start-date">Desde:</label>
+                    <input type="date" id="filter-start-date" disabled>
+                </div>
+                <div>
+                    <label for="filter-end-date">Hasta:</label>
+                    <input type="date" id="filter-end-date" disabled>
+                </div>
+            </div>
+            <button id="download-pdf-btn">
+                Descargar Reporte Filtrado (PDF)
+            </button>
+
+        </div>
+    </dialog>
+
+    <dialog id="notes-modal-dialog">
+        <div class="modal-content">
+            <button class="close-btn-dialog">X</button>
+            <h3 id="notes-modal-title">Notas para [Nombre]</h3> 
+            <form id="notes-form">
+                <textarea id="note-textarea" rows="6" placeholder="Añadir notas del paciente aquí..."></textarea>
+                <button type="submit" class="primary-button">Guardar Notas</button>
+            </form>
+        </div>
+    </dialog>
+
+    <script src="../JS/scripts/script_pacientes.js" defer></script>
+    <script src="../JS/backendPacientes.js"></script>
+</body>
+</html>

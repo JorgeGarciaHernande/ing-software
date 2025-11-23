@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Programar y Ver Citas</title>
+    <link rel="stylesheet" href="../CSS/style_appointment.css" />
+</head>
+
+<body>
+    <div class="main-layout">
+        
+        <section class="content-section appointment-list-container">
+            <h3>Citas Futuras Programadas 🗓️</h3>
+            <div id="citas-registradas-contenido">
+                <p>Cargando citas...</p>
+            </div>
+            <p id="citas-status-message" class="error-message" style="color: blue;"></p>
+        </section>
+
+        <section class="content-section appointment-form-container">
+            <h3>Programar Nueva Cita ➕</h3>
+
+            <form id="new-appointment-form">
+                <label for="appt-paciente">Paciente:</label>
+                <select id="appt-paciente" required>
+                    <option value="">Cargando pacientes...</option>
+                </select>
+
+                <label for="appt-date">Fecha de la Cita:</label>
+                <input type="date" id="appt-date" required>
+
+                <label for="appt-time">Hora de la Cita:</label>
+                <input type="time" id="appt-time" required>
+
+                <button type="submit" id="save-event">Guardar Cita</button>
+                <p class="error-message" id="appt-status-message"></p>
+            </form>
+        </section>
+    </div>
+</body>
+</html>

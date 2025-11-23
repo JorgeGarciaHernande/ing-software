@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recetas Médicas - Team Overview</title>
+    <link rel="stylesheet" href="../CSS/style_recipe.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📋 Recetas Médicas</h1>
+            <a href="main_menu.html" class="btn-back">← Volver al Menú</a>
+        </div>
+
+        <!-- Selector de Paciente -->
+        <div class="selector-patient-container">
+            <label for="patients-options" class="selector-label">👤 Seleccionar Paciente:</label>
+            <select id="patients-options" class="patient-select-control" required>
+                <option value="">-- Seleccione un paciente --</option>
+            </select>
+        </div>
+
+        <div class="content-grid">
+            <div class="new-recipe-container">
+                <section class="new-recipe-panel">
+                    <h2 class="panel-subtitle">✚ Registrar Nueva Receta Médica</h2>
+                    <form id="new-recipe-form" class="new-recipe-form">
+                        <label for="medication-name">Nombre del Medicamento:</label>
+                        <input type="text" id="medication-name" name="medication-name" 
+                               placeholder="Ej: Metformina" required>
+
+                        <label for="medication-type">Tipo de Medicamento:</label>
+                        <select name="medication-type" id="medication-type" required>
+                            <option value="">-- Seleccione tipo --</option>
+                            <option value="Pastilla">Pastilla</option>
+                            <option value="Cápsula">Cápsula</option>
+                            <option value="Inyección">Inyección</option>
+                            <option value="Jarabe">Jarabe</option>
+                            <option value="Crema">Crema</option>
+                            <option value="Gotas">Gotas</option>
+                        </select>
+
+                        <label for="dosage">Dosis:</label>
+                        <input type="text" id="dosage" name="dosage" 
+                               placeholder="Ej: 500mg" required>
+
+                        <label for="frequency">Frecuencia:</label>
+                        <input type="text" id="frequency" name="frequency" 
+                               placeholder="Ej: Cada 8 horas" required>
+
+                        <label for="duration">Duración del Tratamiento:</label>
+                        <input type="text" id="duration" name="duration" 
+                               placeholder="Ej: 7 días" required>
+
+                        <label for="additional-notes">Notas Adicionales:</label>
+                        <textarea id="additional-notes" name="additional-notes" 
+                                  placeholder="Instrucciones especiales, recomendaciones, etc."></textarea>
+
+                        <button type="submit" id="save-recipe-btn">💾 Guardar Receta</button>
+                        <p id="form-message" class="message" style="display: none;"></p>
+                    </form>
+                </section>
+            </div>
+
+            <!-- Historial de Recetas -->
+            <div class="record-recipe-container">
+                <h2>📜 Historial de Recetas del Paciente</h2>
+                <ul id="recipe-list" class="recipe-list">
+                    <li class="loading">Seleccione un paciente para ver sus recetas...</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="../JS/scripts/script_recipe.js" defer></script>
+    <script src="../JS/backendrecetas.js"></script>
+</body>
+</html>

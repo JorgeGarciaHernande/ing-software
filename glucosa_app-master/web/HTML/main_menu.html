@@ -1,0 +1,1622 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú Principal</title>
+    <link rel="stylesheet" href="../CSS/style_menu.css">
+    
+    <link rel="stylesheet" href="../CSS/Fonts/Fonts.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/introjs.min.css">
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    
+</head>
+<body>
+
+     <main class="main-content" id="app-content-area">
+         <!-- El contenido dinámico se cargará aquí -->
+    </main>
+
+    <!-- Panel de Notificaciones de Citas -->
+    <div id="appointments-notification" class="appointments-notification" style="display: none;">
+        <div class="notification-header">
+            <h3>📅 Próximas Citas</h3>
+            <button class="notification-close" onclick="closeAppointmentsNotification()">×</button>
+        </div>
+        <ul id="appointments-list" class="appointments-list">
+            <li class="no-appointments">Cargando citas...</li>
+        </ul>
+    </div>
+
+    <div class="sidebar-container">
+        <input type="checkbox" id="sidebar-toggle" class="sidebar-toggle-input" hidden>
+        <label for="sidebar-toggle" class="sidebar-toggle-btn">
+            <span class="menu-icon">☰</span>
+        </label>
+        <nav class="sidebar">
+            <div class="sidebar-header"></div>
+            <ul class="main-links">
+                <li>
+                    <a href="#" class="nav-link" id="btn_home">
+                        <span class="nav-icon">🏠</span><span class="nav-text">Inicio</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="mis_pacientes.html" class="nav-link" id="btn-patient">
+                        <span class="nav-icon">👥</span> <span class="nav-text">Mis pacientes</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link create-patient-link" id="btn-open-paciente-modal-sidebar">
+                        <span class="nav-icon">➕</span> <span class="nav-text">Nuevo paciente</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="recipe.html" class="nav-link create-recipe-link" id="btn-open-create-recipe">
+                        <span class="nav-icon">📄</span> <span class="nav-text">Receta medica</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="dietas.html" class="nav-link" id="btn_dietas">
+                        <span class="nav-icon">🍎</span><span class="nav-text">Dietas</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="convenios.html" class="nav-link" id="btn_convenios">
+                        <span class="nav-icon">🤝</span><span class="nav-text">Convenios</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="appointment.html" class="nav-link" id="btn-appointments">
+                        <span class="nav-icon">📅</span>
+                        <span class="nav-text">Citas</span>
+                        <span id="citas-badge" class="notification-badge" style="display: none;">0</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <a href="#" class="nav-link" id="btn-open-settings">
+                    <span class="nav-icon">⚙️</span> <span class="nav-text">Ajustes</span>
+                </a>
+                <a href="../index.html" class="nav-link" onclick="localStorage.clear();">
+                    <span class="nav-icon">🚪</span> <span class="nav-text">Cerrar sesión</span>
+                </a>
+                <a href="#" class="nav-link" id="btn-open-tour">
+                    <span class="nav-icon">❓</span><span class="nav-text">Ver tutorial</span>
+                </a>
+            </div>
+
+            <div class="user-profile">
+                <img src="../Images/default_user.png" alt="Foto perfil">
+                <span id="doctor-nombre-display" class="nav-text user-name">Cargando...</span>
+            </div>
+        </nav>
+    </div>
+
+    <dialog id="paciente-creation-dialog" class="paciente-dialog">
+        <div class="modal-content">
+            <h2 class="main-title">Crear Nuevo Paciente</h2>
+            <p class="subtitle">Ingresa los datos requeridos.</p>
+            <form id="new-paciente-form">
+                <label for="modal-nombre">Nombre:</label>
+                <input type="text" id="modal-nombre" name="nombre" required placeholder="Juan Antonio">
+
+                <label for="modal-apellido">Apellido:</label>
+                <input type="text" id="modal-apellido" name="apellido" required placeholder=" Pérez Lopez">
+
+                <label for="modal-fecha_nacimiento">Fecha de nacimiento:</label>
+                <input type="date" id="modal-fecha_nacimiento" name="fecha_nacimiento" required>
+
+                <label for="modal-glucosa">Nivel de glucosa Inicial (mg/dL):</label>
+                <input type="number" step="0.1" id="modal-glucosa" name="med_glucosa" placeholder="Ej: 110.5">
+
+                <label for="modal-peso">Peso (kg):</label>
+                <input type="number" step="0.1" id="modal-peso" name="peso" placeholder="Ej: 70.3">
+
+                <label for="modal-altura">Altura (cm):</label>
+                <input type="number" id="modal-altura" name="altura" placeholder="Ej: 175">
+
+                <label for="modal-email">Correo electronico:</label>
+                <input type="email" id="modal-email" name="email" required placeholder="paciente@correo.com">
+
+                <label for="modal-password">Contraseña:</label>
+                <input type="password" id="modal-password" name="password" required minlength="6"> 
+
+                <button type="submit" class="primary-button" id="save-paciente-btn">Guardar Paciente</button>
+                <p id="modal-error-message" style="color: red; text-align: center; height: 20px; margin-top: 10px;"></p>
+            </form>
+            <span class="close-btn-dialog" id="paciente-modal-close-dialog">X</span>
+        </div>
+    </dialog>
+
+    <dialog id="settings-dialog" class="settings">
+        <div class="modal-content">
+             <h2 class="main-title">Ajustes</h2>
+             <p class="subtitle">Configura tus preferencias.</p>
+             <form id="settings-form">
+                 <label for="theme">Tema:</label>
+                 <select id="theme" name="theme"> 
+                     <option value="light">Claro</option> 
+                     <option value="dark">Oscuro</option> 
+                 </select>
+                 <label for="notifications">Notificaciones:</label>
+                 <select id="notifications" name="notifications"> 
+                     <option value="enabled">Habilitadas</option> 
+                     <option value="disabled">Deshabilitadas</option> 
+                 </select>
+                 <button type="submit" class="primary-button">Guardar Cambios</button>
+             </form>
+             <span class="close-btn-dialog" id="settings-close-dialog">X</span>
+        </div>
+    </dialog>
+ 
+    <script>
+        // Función para cerrar el panel de notificaciones
+        function closeAppointmentsNotification() {
+            document.getElementById('appointments-notification').style.display = 'none';
+        }
+
+        // Función expuesta globalmente para mostrar las citas
+        window.displayUpcomingAppointments = function(citas) {
+            const appointmentsList = document.getElementById('appointments-list');
+            const notificationPanel = document.getElementById('appointments-notification');
+            const citasBadge = document.getElementById('citas-badge');
+
+            if (!citas || citas.length === 0) {
+                appointmentsList.innerHTML = `
+                    <li class="no-appointments">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <p>No hay citas próximas</p>
+                    </li>
+                `;
+                citasBadge.style.display = 'none';
+                return;
+            }
+
+            // Mostrar badge con el número de citas
+            citasBadge.textContent = citas.length;
+            citasBadge.style.display = 'flex';
+
+            // Construir la lista de citas
+            appointmentsList.innerHTML = '';
+            citas.forEach(cita => {
+                const fechaCita = new Date(cita.fecha_hora);
+                const hoy = new Date();
+                hoy.setHours(0, 0, 0, 0);
+                const fechaCitaSinHora = new Date(fechaCita);
+                fechaCitaSinHora.setHours(0, 0, 0, 0);
+                
+                const esHoy = fechaCitaSinHora.getTime() === hoy.getTime();
+                
+                const horaFormateada = fechaCita.toLocaleTimeString('es-MX', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                const fechaFormateada = fechaCita.toLocaleDateString('es-MX', {
+                    day: 'numeric',
+                    month: 'short'
+                });
+
+                const listItem = `
+                    <li class="appointment-item">
+                        <div class="appointment-time">
+                            ${horaFormateada} - ${fechaFormateada}
+                            <span class="appointment-badge ${esHoy ? 'badge-today' : 'badge-upcoming'}">
+                                ${esHoy ? 'HOY' : 'Próximamente'}
+                            </span>
+                        </div>
+                        <div class="appointment-patient">👤 ${cita.nombre_paciente || 'Paciente sin nombre'}</div>
+                        <div class="appointment-status">${cita.motivo || 'Consulta general'}</div>
+                    </li>
+                `;
+                appointmentsList.insertAdjacentHTML('beforeend', listItem);
+            });
+
+
+            // Mostrar el panel
+            notificationPanel.style.display = 'block';
+        }
+    </script>
+
+    <!--Backend citas-->
+    <script>
+window.SUPABASE_URL = window.SUPABASE_URL || 'https://lxbjjvfrankabciuizsu.supabase.co';
+window.SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx4YmpqdmZyYW5rYWJjaXVpenN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NjU3NDIsImV4cCI6MjA3NDI0MTc0Mn0.2ZFjxl3LAeCoTd6_Th96ob_CuoFgo-o307VRjg28Qmo';
+window.supabaseClient = window.supabaseClient || (typeof supabase !== 'undefined' ? supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY) : null);
+const supabaseClient = window.supabaseClient;
+// Namespace para evitar colisiones entre módulos SPA
+window.AppointmentAPI = window.AppointmentAPI || {};
+
+
+/**
+ * Carga los pacientes asociados a un doctor.
+ * @param {string} doctorId - El ID del doctor.
+ * @returns {Promise<Array>} Un array de objetos paciente.
+ */
+async function cargarPacientes(doctorId) {
+    if (!supabaseClient) throw new Error('Supabase no inicializado');
+    if (!doctorId) {
+        throw new Error("ID de doctor no proporcionado.");
+    }
+    const docId = parseInt(doctorId);
+
+    try {
+        const { data: pacientes, error } = await supabaseClient
+            .from('paciente')
+            .select('id_paciente, nombre_completo')
+            .eq('id_doctor', docId)
+            .order('nombre_completo');
+
+        if (error) throw error;
+
+        return pacientes;
+    } catch (error) {
+        console.error("Error cargando pacientes en backend:", error);
+        throw new Error("Fallo al obtener la lista de pacientes.");
+    }
+}
+
+/**
+ * Carga las citas futuras del doctor y llama a la función de UI para mostrarlas.
+ * @param {string} doctorId - El ID del doctor.
+ */
+async function cargarYMostrarCitas(doctorId) {
+    if (!supabaseClient) throw new Error('Supabase no inicializado');
+    if (!doctorId) return;
+    const docId = parseInt(doctorId);
+
+    // Muestra mensaje de carga en la UI (asume el elemento global existe)
+    const citasRegistradasContenidoUI = document.getElementById('citas-registradas-contenido');
+    if (citasRegistradasContenidoUI) {
+        citasRegistradasContenidoUI.innerHTML = '<p>Buscando citas...</p>';
+    }
+
+    const today = new Date();
+    // Filtramos por fecha_cita >= hoy
+    const todayISO = today.toISOString().split('T')[0];
+
+    try {
+        const { data: citas, error } = await supabaseClient
+            .from('citas')
+            .select(`
+                id_cita,
+                fecha_cita,
+                hora_cita,
+                paciente:id_paciente ( nombre_completo )
+            `)
+            .eq('id_doctor', docId)
+            .gte('fecha_cita', todayISO)
+            .order('fecha_cita', { ascending: true })
+            .order('hora_cita', { ascending: true });
+
+        if (error) throw error;
+
+        // Llama a la función de presentación de la UI (resuelta en runtime)
+        const mostrarCitasUI = (window.AppointmentAPI && window.AppointmentAPI.mostrarCitas) || window.mostrarCitas;
+        if (typeof mostrarCitasUI === 'function') {
+            try { mostrarCitasUI(citas); } catch (e) { console.error('mostrarCitasUI error:', e); }
+        }
+
+    } catch (error) {
+        console.error("Error al cargar citas del doctor en backend:", error);
+        if (citasRegistradasContenidoUI) {
+            citasRegistradasContenidoUI.innerHTML = `<p style="color:red;">Error al cargar citas: ${error.message}</p>`;
+        }
+    }
+}
+
+/**
+ * Guarda una nueva cita en Supabase.
+ * @param {string} doctorId - ID del doctor.
+ * @param {string} pacienteId - ID del paciente.
+ * @param {string} fecha - Fecha de la cita (YYYY-MM-DD).
+ * @param {string} hora - Hora de la cita (HH:MM).
+ */
+async function guardarNuevaCita(doctorId, pacienteId, fecha, hora) {
+    if (!supabaseClient) throw new Error('Supabase no inicializado');
+    if (!doctorId || !pacienteId || !fecha || !hora) {
+        throw new Error("Datos de cita incompletos.");
+    }
+    const docId = parseInt(doctorId);
+
+    const nuevaCita = {
+        id_doctor: docId,
+        id_paciente: parseInt(pacienteId),
+        fecha_cita: fecha,
+        hora_cita: hora + ":00" // Formato necesario para la base de datos (HH:MM:SS)
+    };
+
+    try {
+        const { data, error } = await supabaseClient
+            .from('citas')
+            .insert([nuevaCita])
+            .select();
+
+        if (error) {
+            if (error.code === '23505') {
+                throw new Error(`Ya existe una cita a esta hora para el paciente seleccionado. (${hora})`);
+            } else {
+                throw error;
+            }
+        }
+
+        // Vuelve a cargar y mostrar la lista de citas en la UI
+        cargarYMostrarCitas(doctorId);
+
+        return data;
+
+    } catch (error) {
+        console.error("Error al guardar cita en backend:", error);
+        // Re-lanza el error para que la función de manejo de UI lo capture
+        throw error;
+    }
+}
+
+/**
+ * Elimina una cita de Supabase por su ID.
+ * @param {string} idCita - El ID de la cita a eliminar.
+ */
+async function eliminarCita(idCita) {
+    if (!supabaseClient) throw new Error('Supabase no inicializado');
+    if (!idCita) throw new Error("ID de cita no proporcionado.");
+
+    try {
+        const { error } = await supabaseClient
+            .from('citas')
+            .delete()
+            .eq('id_cita', parseInt(idCita));
+
+        if (error) throw error;
+
+        // Vuelve a cargar y mostrar la lista de citas en la UI
+        const currentDoctorId = localStorage.getItem('doctorId');
+        if (currentDoctorId) {
+            cargarYMostrarCitas(currentDoctorId);
+        }
+
+    } catch (error) {
+        console.error("Error al eliminar cita en backend:", error);
+        // Re-lanza el error para que la función de manejo de UI lo capture
+        throw error;
+    }
+}
+
+// Expone funciones en un namespace para evitar colisiones globales
+window.AppointmentAPI.cargarPacientes = cargarPacientes;
+window.AppointmentAPI.cargarYMostrarCitas = cargarYMostrarCitas;
+window.AppointmentAPI.guardarNuevaCita = guardarNuevaCita;
+window.AppointmentAPI.eliminarCita = eliminarCita;
+
+// ---------------------------------------------------------------
+// Renderizador UI y función de inicialización para SPA
+// ---------------------------------------------------------------
+/**
+ * Renderiza la lista de citas en el contenedor correspondiente.
+ * @param {Array} citas - Array de citas devuelto por Supabase.
+ */
+function mostrarCitas(citas) {
+    const contenedor = document.getElementById('citas-registradas-contenido');
+    if (!contenedor) return;
+
+    if (!citas || citas.length === 0) {
+        contenedor.innerHTML = '<p>No hay citas futuras.</p>';
+        return;
+    }
+
+    const html = citas.map(c => {
+        const fecha = c.fecha_cita;
+        const hora = c.hora_cita?.substring(0, 5) || '';
+        const pacienteNombre = c.paciente?.nombre_completo || 'Paciente';
+        return `<div class="cita-item">\n     
+                <div class="cita-info">\n    
+                <span class="cita-fecha">📅 ${fecha}</span>\n               
+                <span class="cita-hora">⏰ ${hora}</span>\n                
+                <span class="cita-paciente">👤 ${pacienteNombre}</span>\n            
+                </div>\n            
+                    <button class="cita-delete-btn" data-id="${c.id_cita}">Eliminar</button>\n        
+                </div>`;
+    }).join('');
+
+    contenedor.innerHTML = html;
+}
+
+// Exponer también en el namespace y mantener compatibilidad global
+window.AppointmentAPI.mostrarCitas = mostrarCitas;
+window.mostrarCitas = mostrarCitas;
+
+/**
+ * Inicializa la vista de citas cuando se inyecta vía SPA.
+ */
+function initAppointment() {
+    // Usar alias locales para evitar que otras vistas (mis pacientes) sobreescriban estas funciones globales.
+    const cargarPacientesAlias = (window.AppointmentAPI && window.AppointmentAPI.cargarPacientes) || cargarPacientes;
+    const cargarYMostrarCitasAlias = (window.AppointmentAPI && window.AppointmentAPI.cargarYMostrarCitas) || cargarYMostrarCitas;
+    const guardarNuevaCitaAlias = (window.AppointmentAPI && window.AppointmentAPI.guardarNuevaCita) || guardarNuevaCita;
+    const eliminarCitaAlias = (window.AppointmentAPI && window.AppointmentAPI.eliminarCita) || eliminarCita;
+
+    const doctorId = localStorage.getItem('doctorId');
+    const statusMsg = document.getElementById('appt-status-message');
+    const pacientesSelect = document.getElementById('appt-paciente');
+    const form = document.getElementById('new-appointment-form');
+
+    if (!doctorId) {
+        if (statusMsg) statusMsg.textContent = 'No se encontró el ID del doctor.';
+        console.warn('doctorId faltante en localStorage');
+        return;
+    }
+
+    // Cargar pacientes
+    cargarPacientesAlias(doctorId)
+        .then(pacientes => {
+            if (pacientesSelect) {
+                pacientesSelect.innerHTML = '<option value="">Seleccione paciente...</option>' +
+                    pacientes.map(p => `<option value="${p.id_paciente}">${p.nombre_completo}</option>`).join('');
+            }
+        })
+        .catch(err => {
+            console.error('Error cargando pacientes (SPA):', err);
+            if (pacientesSelect) {
+                pacientesSelect.innerHTML = '<option value="">Error cargando pacientes</option>';
+            }
+        });
+
+    // Cargar citas futuras
+    cargarYMostrarCitasAlias(doctorId);
+
+    // Manejo del submit del formulario
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (statusMsg) statusMsg.textContent = '';
+
+            const pacienteId = pacientesSelect?.value;
+            const fecha = document.getElementById('appt-date')?.value;
+            const hora = document.getElementById('appt-time')?.value;
+
+            if (!pacienteId || !fecha || !hora) {
+                if (statusMsg) statusMsg.textContent = 'Complete todos los campos.';
+                return;
+            }
+            try {
+                await guardarNuevaCitaAlias(doctorId, pacienteId, fecha, hora);
+                if (statusMsg) statusMsg.textContent = 'Cita guardada correctamente.';
+                form.reset();
+            } catch (err) {
+                if (statusMsg) statusMsg.textContent = err.message || 'Error al guardar cita.';
+            }
+        });
+    }
+
+    // Delegación para botones de eliminar
+    const contenedorCitas = document.getElementById('citas-registradas-contenido');
+    if (contenedorCitas) {
+        contenedorCitas.addEventListener('click', async (e) => {
+            const target = e.target;
+            if (target && target.classList.contains('cita-delete-btn')) {
+                const id = target.getAttribute('data-id');
+                if (!id) return;
+                try {
+                    await eliminarCitaAlias(id);
+                } catch (err) {
+                    console.error('Error eliminando cita:', err);
+                }
+            }
+        });
+    }
+}
+
+window.initAppointment = initAppointment;
+    </script>
+
+    <!--Backend Dietas-->
+    <script>
+        window.SUPABASE_URL = window.SUPABASE_URL || 'https://lxbjjvfrankabciuizsu.supabase.co';
+        window.SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx4YmpqdmZyYW5rYWJjaXVpenN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NjU3NDIsImV4cCI6MjA3NDI0MTc0Mn0.2ZFjxl3LAeCoTd6_Th96ob_CuoFgo-o307VRjg28Qmo';
+        window.supabaseClient = window.supabaseClient || supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+        
+
+        /**
+         * Obtiene el ID del doctor desde localStorage (debe estar guardado en el login)
+         * @returns {number|null} ID del doctor o null si no está logueado
+         */
+        function getDoctorId() {
+            const doctorId = localStorage.getItem('doctorId');
+            if (!doctorId) {
+                console.error('No hay doctor logueado. Redirigiendo al login...');
+                alert('Sesión no encontrada. Por favor inicie sesión.');
+                window.location.href = '../index.html';
+                return null;
+            }
+            return parseInt(doctorId);
+        }
+
+        /**
+         * Carga los pacientes asociados al doctor logueado
+         */
+        async function loadPacientesForDoctor() {
+            const doctorId = getDoctorId();
+            if (!doctorId) return;
+
+            try {
+                const { data: pacientes, error } = await supabaseClient
+                    .from('paciente')
+                    .select('id_paciente, nombre_completo, correo')
+                    .eq('id_doctor', doctorId)
+                    .order('nombre_completo', { ascending: true });
+
+                if (error) throw error;
+
+                // Llamar a la función de UI para mostrar los pacientes
+                if (window.displayPatientsUI) {
+                    window.displayPatientsUI(pacientes);
+                }
+
+            } catch (error) {
+                console.error('Error al cargar pacientes:', error);
+                alert('Error al cargar la lista de pacientes: ' + error.message);
+            }
+        }
+
+        /**
+         * Carga las dietas de un paciente específico
+         * @param {number} pacienteId - ID del paciente
+         */
+        async function loadDietasByPaciente(pacienteId) {
+            try {
+                const { data: dietas, error } = await supabaseClient
+                    .from('dietas')
+                    .select('id_dieta, id_paciente, id_doctor, fecha_asignacion, desayuno, comida, cena, created_at')
+                    .eq('id_paciente', pacienteId)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                // Llamar a la función de UI para mostrar las dietas
+                if (window.displayDietsUI) {
+                    window.displayDietsUI(dietas);
+                }
+
+            } catch (error) {
+                console.error('Error al cargar dietas del paciente:', error);
+                throw error;
+            }
+        }
+
+        /**
+         * Guarda un nuevo plan de dieta en Supabase
+         * @param {number} pacienteId - ID del paciente
+         * @param {string} dietName - Nombre del plan (no se guarda en BD, solo para UI)
+         * @param {string} dietType - Tipo de dieta (no se guarda en BD, solo para UI)
+         * @param {string} caloriesGoal - Meta de calorías diarias (no se guarda en BD, solo para UI)
+         * @param {string} duration - Duración del plan (no se guarda en BD, solo para UI)
+         * @param {string} breakfast - Alimentos del desayuno
+         * @param {string} lunch - Alimentos de la comida
+         * @param {string} dinner - Alimentos de la cena
+         * @param {string} notes - Recomendaciones adicionales (se pueden agregar a alguno de los campos de comida)
+         */
+        async function saveNewDiet(pacienteId, dietName, dietType, caloriesGoal, duration, breakfast, lunch, dinner, notes) {
+            const doctorId = getDoctorId();
+            if (!doctorId) return;
+
+            // Preparar los datos de la dieta según la estructura de tu BD
+            const newDiet = {
+                id_paciente: parseInt(pacienteId),
+                id_doctor: doctorId,
+                fecha_asignacion: new Date().toISOString().split('T')[0], // Fecha actual en formato YYYY-MM-DD
+                desayuno: breakfast || '',
+                comida: lunch || '',
+                cena: dinner || ''
+                // Nota: Los campos nombre_dieta, tipo_dieta, calorias_objetivo, duracion y recomendaciones
+                // no existen en tu tabla actual. Si los necesitas, deberás agregar columnas a tu tabla.
+            };
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('dietas')
+                    .insert([newDiet])
+                    .select();
+
+                if (error) throw error;
+
+                console.log('Dieta guardada exitosamente:', data);
+                return data;
+
+            } catch (error) {
+                console.error('Error al guardar dieta:', error);
+                throw error;
+            }
+        }
+
+        // --- EXPOSICIÓN GLOBAL DE FUNCIONES ---
+        window.loadPacientesForDoctor = loadPacientesForDoctor;
+        window.loadDietasByPaciente = loadDietasByPaciente;
+        window.saveNewDiet = saveNewDiet;
+    </script>
+
+    <!--backend receta-->
+    <script>
+        const SUPABASE_URL = window.SUPABASE_URL || 'https://lxbjjvfrankabciuizsu.supabase.co';
+        const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx4YmpqdmZyYW5rYWJjaXVpenN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NjU3NDIsImV4cCI6MjA3NDI0MTc0Mn0.2ZFjxl3LAeCoTd6_Th96ob_CuoFgo-o307VRjg28Qmo';
+        window.SUPABASE_URL = SUPABASE_URL;
+        window.SUPABASE_ANON_KEY = SUPABASE_ANON_KEY;
+        window.supabaseClient = window.supabaseClient || (typeof supabase !== 'undefined' ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null);
+        
+        /**
+         * Obtiene el ID del doctor desde localStorage (debe estar guardado en el login)
+         * @returns {number|null} ID del doctor o null si no está logueado
+         */
+        function getDoctorId() {
+            const doctorId = localStorage.getItem('doctorId');
+            if (!doctorId) {
+                console.error('No hay doctor logueado. Redirigiendo al login...');
+                alert('Sesión no encontrada. Por favor inicie sesión.');
+                window.location.href = '../index.html';
+                return null;
+            }
+            return parseInt(doctorId);
+        }
+
+        /**
+         * Carga los pacientes asociados al doctor logueado
+         */
+        async function loadPacientesForDoctor() {
+            const doctorId = getDoctorId();
+            if (!doctorId) return;
+
+            try {
+                if (!supabaseClient) throw new Error('Supabase no inicializado');
+                const { data: pacientes, error } = await supabaseClient
+                    .from('paciente')
+                    .select('id_paciente, nombre_completo, correo')
+                    .eq('id_doctor', doctorId)
+                    .order('nombre_completo', { ascending: true });
+
+                if (error) throw error;
+
+                // Llamar a la función de UI para mostrar los pacientes
+                if (window.displayPatientsUI) {
+                    window.displayPatientsUI(pacientes);
+                }
+
+            } catch (error) {
+                console.error('Error al cargar pacientes:', error);
+                alert('Error al cargar la lista de pacientes: ' + error.message);
+            }
+        }
+
+        /**
+         * Carga las recetas de un paciente específico
+         * @param {number} pacienteId - ID del paciente
+         */
+        async function loadRecetasByPaciente(pacienteId) {
+            try {
+                if (!supabaseClient) throw new Error('Supabase no inicializado');
+                const { data: recetas, error } = await supabaseClient
+                    .from('receta_medica')
+                    .select('id_receta, nombre_medicamento, ordenes_toma, tiempo_tratamiento, created_at')
+                    .eq('id_paciente', pacienteId)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                // Llamar a la función de UI para mostrar las recetas
+                if (window.displayRecipesUI) {
+                    window.displayRecipesUI(recetas);
+                }
+
+            } catch (error) {
+                console.error('Error al cargar recetas del paciente:', error);
+                throw error;
+            }
+        }
+
+        /**
+         * Guarda una nueva receta médica en Supabase
+         * @param {number} pacienteId - ID del paciente
+         * @param {string} medicationName - Nombre del medicamento
+         * @param {string} medicationType - Tipo de medicamento (Pastilla, Cápsula, etc.)
+         * @param {string} dosage - Dosis del medicamento
+         * @param {string} frequency - Frecuencia de toma
+         * @param {string} duration - Duración del tratamiento
+         * @param {string} notes - Notas adicionales
+         */
+        async function saveNewReceta(pacienteId, medicationName, medicationType, dosage, frequency, duration, notes) {
+            const doctorId = getDoctorId();
+            if (!doctorId) return;
+
+            // Preparar los datos de la receta
+            // Nota: Ajusta los nombres de columnas según tu schema de Supabase
+            const newReceta = {
+                id_paciente: parseInt(pacienteId),
+                id_doctor: doctorId,
+                nombre_medicamento: medicationName,
+                ordenes_toma: `${medicationType} - ${frequency} - ${dosage}`, // Combino varios campos
+                tiempo_tratamiento: duration,
+                // Si tienes una columna separada para notas, agrégala aquí
+                // notas_adicionales: notes
+            };
+
+            try {
+                if (!supabaseClient) throw new Error('Supabase no inicializado');
+                const { data, error } = await supabaseClient
+                    .from('receta_medica')
+                    .insert([newReceta])
+                    .select();
+
+                if (error) throw error;
+
+                console.log('Receta guardada exitosamente:', data);
+                return data;
+
+            } catch (error) {
+                console.error('Error al guardar receta:', error);
+                throw error;
+            }
+        }
+
+        // --- EXPOSICIÓN GLOBAL DE FUNCIONES ---
+        window.loadPacientesForDoctor = loadPacientesForDoctor;
+        window.loadRecetasByPaciente = loadRecetasByPaciente;
+        window.saveNewReceta = saveNewReceta;
+    </script>
+
+    <!--Script pacientes-->
+    <script>
+        // Nota: Este archivo fue refactorizado para permitir inicialización manual
+// cuando la plantilla `mis_pacientes.html` se carga dinámicamente en el SPA.
+
+// Colocar stubs en window para que otros scripts (backend) puedan referenciar
+// las funciones incluso antes de que la vista se inicialice. Los stubs serán
+// reemplazados por las implementaciones reales cuando se llame a initMisPacientes().
+window.mostrarPacientesUI = window.mostrarPacientesUI || function () { console.warn('mostrarPacientesUI no inicializado aún'); };
+window.llenarPerfilModalUI = window.llenarPerfilModalUI || function () { console.warn('llenarPerfilModalUI no inicializado aún'); };
+window.mostrarErrorListaUI = window.mostrarErrorListaUI || function () { console.warn('mostrarErrorListaUI no inicializado aún'); };
+window.limpiarYMostrarCargaModal = window.limpiarYMostrarCargaModal || function () { console.warn('limpiarYMostrarCargaModal no inicializado aún'); };
+window.handleFilterChange = window.handleFilterChange || function () { console.warn('handleFilterChange no inicializado aún'); };
+window.calcularEdad = window.calcularEdad || function () { console.warn('calcularEdad no inicializado aún'); return null; };
+window.getEstadoGlucosaDetallado = window.getEstadoGlucosaDetallado || function () { console.warn('getEstadoGlucosaDetallado no inicializado aún'); return { texto: 'Desconocido', clase: '' }; };
+window.formatearFechaSimple = window.formatearFechaSimple || function (d) { return d || 'N/A'; };
+// Stub para el manejador global del cambio de estado (archivar/reactivar)
+window.handleCambioEstado = window.handleCambioEstado || function () { console.warn('handleCambioEstado no inicializado aún'); };
+
+function initMisPacientes() {
+    // --- DOM ELEMENTS ---
+    const pacientesContainer = document.getElementById('pacientes-container');
+    const loadingElement = document.getElementById('loading-message');
+    const inactivosContainer = document.getElementById('inactivos-container');
+    const loadingInactivos = document.getElementById('loading-inactivos');
+    const profileModal = document.getElementById('patient-profile-modal');
+    const closeProfileModalBtn = document.getElementById('close-profile-modal');
+    const downloadPdfBtn = document.getElementById('download-pdf-btn');
+
+    // --- FUNCIONES DE LA UI: MOSTRAR/LIMPIAR/MANEJO DE EVENTOS (Expuestas a Window) ---
+    function getEstadoGlucosaSimple(glucosa) {
+        const detalle = getEstadoGlucosaDetallado(glucosa);
+        if (detalle.clase === 'status-ok') return { texto: 'Normal', clase: detalle.clase };
+        return detalle;
+    }
+
+    window.mostrarPacientesUI = function (pacientes, containerElement, loadInactive = false) {
+        const loader = loadInactive ? loadingInactivos : loadingElement;
+        if (loader) loader.style.display = 'none';
+
+        if (!pacientes || pacientes.length === 0) {
+            containerElement.innerHTML = `<p class="loading">${loadInactive ? 'No hay pacientes inactivos archivados.' : 'No tienes pacientes activos asignados.'}</p>`;
+            return;
+        }
+
+        containerElement.innerHTML = '';
+
+        pacientes.forEach(paciente => {
+            const estadoInfo = getEstadoGlucosaSimple(paciente.ultima_medida_glucosa);
+            const isActivo = paciente.activo === true || paciente.activo === null;
+
+            const actionButtonText = isActivo ? 'Archivar' : 'Reactivar';
+            const actionButtonClass = isActivo ? 'change-status-btn' : 'change-status-btn reactivate';
+
+            const tarjetaHTML = `
+                <div class="patient-card ${loadInactive ? 'inactive' : ''}" 
+                    data-paciente-id="${paciente.id_paciente}">
+                    <h3>${paciente.nombre_completo || 'N/A'}</h3>
+                    <span class="btn-add-note" data-paciente-id="${paciente.id_paciente}">📝</span>
+                    <p>Email: ${paciente.correo || 'N/A'}</p>
+                    <p>Última medición:
+                        <span class="data-highlight">
+                            ${paciente.ultima_medida_glucosa ? paciente.ultima_medida_glucosa + ' mg/dL' : 'N/A'}
+                        </span>
+                    </p>
+                    <p>Estado Glucosa: <span class="${estadoInfo.clase}">${estadoInfo.texto}</span></p>
+                    
+                    <div class="patient-actions">
+                        <button class="${actionButtonClass}" 
+                                        onclick="handleCambioEstado(${paciente.id_paciente}, ${isActivo})">
+                            ${actionButtonText}
+                        </button>
+                        <button class="view-profile-btn" 
+                                        onclick="mostrarPerfilModal(${paciente.id_paciente})">
+                            Ver Perfil Completo
+                        </button>
+                    </div>
+                </div>
+            `;
+            containerElement.innerHTML += tarjetaHTML;
+        });
+    }
+
+    window.llenarPerfilModalUI = function (paciente) {
+        limpiarYMostrarCargaModal(false);
+
+        const edad = calcularEdad(paciente.fecha_nacimiento);
+        const estadoGlucosaInfo = getEstadoGlucosaDetallado(paciente.ultima_medida_glucosa);
+
+        document.getElementById('profile-paciente-id').value = paciente.id_paciente;
+        document.getElementById('profile-nombre').textContent = paciente.nombre_completo || 'N/A';
+        document.getElementById('profile-correo').textContent = paciente.correo || 'N/A';
+        document.getElementById('profile-fecha-nacimiento').textContent = paciente.fecha_nacimiento ? formatearFechaSimple(paciente.fecha_nacimiento) : 'N/A';
+        document.getElementById('profile-edad').textContent = edad !== null ? `${edad} años` : 'N/A';
+        document.getElementById('profile-glucosa').textContent = paciente.ultima_medida_glucosa ? `${paciente.ultima_medida_glucosa} mg/dL` : 'Sin registro';
+
+        const estadoEl = document.getElementById('profile-estado');
+        estadoEl.textContent = estadoGlucosaInfo.texto;
+        estadoEl.className = `profile-data-value ${estadoGlucosaInfo.clase}`;
+
+        document.getElementById('profile-altura').textContent = paciente.altura ? `${(paciente.altura * 100).toFixed(0)} cm` : 'N/A';
+        document.getElementById('profile-peso').textContent = paciente.peso ? `${paciente.peso} kg` : 'N/A';
+
+        // Iniciar con un filtro por defecto (Última Semana)
+        handleFilterChange('week');
+        const fw = document.getElementById('filter-week'); if (fw) fw.checked = true;
+    }
+
+    window.mostrarErrorListaUI = function (mensaje, isInactiveSection = false) {
+        const container = isInactiveSection ? inactivosContainer : pacientesContainer;
+        const loader = isInactiveSection ? loadingInactivos : loadingElement;
+
+        if (loader) loader.style.display = 'none';
+        if (container) container.innerHTML = `<p class="error" style="color: red; grid-column: 1 / -1;">${mensaje}</p>`;
+    }
+
+    async function handleCambioEstado(pacienteId, esActivoActual) {
+        const password = prompt("Ingresa la contraseña 'continuar' para cambiar el estado:");
+        if (!password) return;
+
+        if (password.toLowerCase() !== 'continuar') {
+            alert("Contraseña incorrecta. Estado no cambiado.");
+            return;
+        }
+
+        try {
+            await cambiarEstadoPaciente(pacienteId, esActivoActual);
+
+            alert(`✅ Estado del paciente ID ${pacienteId} cambiado.`);
+
+        } catch (error) {
+            console.error('Error al cambiar estado en la UI:', error);
+            alert(`Error al cambiar el estado: ${error.message}`);
+        }
+    }
+
+    // Exponer la función al scope global para que los botones con onclick inline la encuentren
+    window.handleCambioEstado = handleCambioEstado;
+
+    // --- LÓGICA DE INICIALIZACIÓN ---
+    (function initSequence() {
+        const currentDoctorId = localStorage.getItem('doctorId');
+
+        if (!currentDoctorId) {
+            mostrarErrorListaUI("Error: Sesión no válida. Inicia sesión de nuevo.");
+            return;
+        }
+
+        // EXPOSICIÓN GLOBAL DE ELEMENTOS DOM PARA EL BACKEND
+        window.pacientesContainer = pacientesContainer;
+        window.inactivosContainer = inactivosContainer;
+        window.profileModal = profileModal;
+        window.loadingElement = loadingElement;
+        window.loadingInactivos = loadingInactivos;
+
+        // 🚨 EXPOSICIÓN de elementos para que el backend pueda ocultar/usar el contenedor 🚨
+        window.glucoseChartCanvas = document.getElementById('glucoseChart');
+        window.graphContainer = document.getElementById('graph-container');
+
+        // Reintentos para esperar a que backendPacientes defina iniciarCargaDePacientes (SPA, orden de scripts)
+        let attempts = 0;
+        const maxAttempts = 10; // ~2s total (10 * 200ms)
+        let dynamicLoadTried = false;
+
+        function loadBackendScript(callback) {
+            if (dynamicLoadTried) return; // evitar múltiples inyecciones
+            dynamicLoadTried = true;
+            const script = document.createElement('script');
+            // Ruta relativa desde main_menu.html hacia backendPacientes.js
+            script.src = '../JS/backendPacientes.js';
+            script.async = true;
+            script.onload = () => {
+                console.log('[mis_pacientes] backendPacientes.js cargado dinámicamente.');
+                if (typeof callback === 'function') callback();
+            };
+            script.onerror = () => {
+                mostrarErrorListaUI('Error cargando backendPacientes.js dinámicamente.', false);
+            };
+            document.head.appendChild(script);
+        }
+
+        function tryInit() {
+            attempts++;
+            if (typeof window.iniciarCargaDePacientes === 'function') {
+                console.log('[mis_pacientes] iniciarCargaDePacientes disponible en intento', attempts);
+                window.iniciarCargaDePacientes(currentDoctorId);
+                return;
+            }
+
+            if (attempts < maxAttempts) {
+                // A mitad de los reintentos, probar carga dinámica si aún no existe
+                if (attempts === Math.ceil(maxAttempts / 2) && !dynamicLoadTried) {
+                    console.warn('[mis_pacientes] iniciarCargaDePacientes no encontrada; intentando carga dinámica de backendPacientes.js');
+                    loadBackendScript(() => setTimeout(tryInit, 250));
+                    return;
+                }
+                setTimeout(tryInit, 200);
+            } else {
+                // Último recurso: si nunca se definió tras carga dinámica
+                if (!dynamicLoadTried) {
+                    console.warn('[mis_pacientes] Último intento previo a carga dinámica forzada.');
+                    loadBackendScript(() => setTimeout(() => {
+                        if (typeof window.iniciarCargaDePacientes === 'function') {
+                            window.iniciarCargaDePacientes(currentDoctorId);
+                        } else {
+                            mostrarErrorListaUI('Error de inicialización: backend no disponible incluso tras carga dinámica.', false);
+                        }
+                    }, 300));
+                } else {
+                    mostrarErrorListaUI('Error de inicialización: backend no disponible tras reintentos y carga dinámica.', false);
+                }
+            }
+        }
+        tryInit();
+
+        // Configurar cierre del modal
+        if (profileModal && closeProfileModalBtn) {
+            closeProfileModalBtn.addEventListener('click', () => profileModal.close());
+            profileModal.addEventListener('click', (event) => {
+                if (event.target === profileModal) { profileModal.close(); }
+            });
+        }
+
+        // CONEXIÓN DEL BOTÓN DE DESCARGA (ACTUALIZADO PARA INCLUIR FILTROS)
+        if (downloadPdfBtn && typeof handleDescargarDatos === 'function') {
+            downloadPdfBtn.addEventListener('click', async () => {
+                const pacienteId = document.getElementById('profile-paciente-id').value;
+
+                let startDate = '';
+                let endDate = '';
+
+                const selectedFilterEl = document.querySelector('input[name="date-range"]:checked');
+                const selectedFilter = selectedFilterEl ? selectedFilterEl.value : 'week';
+
+                if (selectedFilter === 'custom') {
+                    startDate = document.getElementById('filter-start-date').value;
+                    endDate = document.getElementById('filter-end-date').value;
+                } else {
+                    // Obtener las fechas del rango seleccionado (calculadas por handleFilterChange)
+                    const dates = getRangeDates(selectedFilter);
+                    startDate = dates.start;
+                    endDate = dates.end;
+                }
+
+                if (pacienteId) {
+                    // Se pasan los filtros de fecha al backend
+                    await handleDescargarDatos(parseInt(pacienteId), startDate, endDate);
+                } else {
+                    alert("No se pudo obtener el ID del paciente para la descarga.");
+                }
+            });
+        }
+
+        // Inicializar los filtros al cargar la página (para evitar valores nulos al abrir el modal)
+        handleFilterChange('week');
+    })();
+
+    // --- FUNCIONES DE LÓGICA DE FILTRADO DE FECHAS ---
+
+        /**
+         * Calcula las fechas de inicio y fin para un rango predefinido.
+         * @param {string} range - 'week', 'month', 'year', 'all'.
+         * @returns {{start: string, end: string}}
+         */
+        function getRangeDates(range) {
+            const today = new Date();
+            let startDate = null;
+            const endIso = today.toISOString().split('T')[0];
+
+            switch (range) {
+                case 'week':
+                    startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
+                    break;
+                case 'month':
+                    startDate = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+                    break;
+                case 'year':
+                    startDate = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
+                    break;
+                case 'all':
+                    return { start: '', end: endIso };
+                case 'custom':
+                    // Para personalizado, no devolvemos fechas automáticas, se usan los inputs
+                    return {
+                        start: document.getElementById('filter-start-date').value,
+                        end: document.getElementById('filter-end-date').value
+                    };
+                default:
+                    return { start: '', end: endIso }; // Por defecto: Todo
+            }
+
+            // Formatear la fecha de inicio a ISO 8601 (YYYY-MM-DD)
+            const startIso = startDate ? startDate.toISOString().split('T')[0] : '';
+            return { start: startIso, end: endIso };
+        }
+
+        /**
+         * Maneja el cambio del radio button del filtro.
+         * Habilita/Deshabilita los campos de fecha según el rango seleccionado.
+         * @param {string} range - El valor del radio button seleccionado.
+         */
+        window.handleFilterChange = function (range) {
+            const startDateInput = document.getElementById('filter-start-date');
+            const endDateInput = document.getElementById('filter-end-date');
+
+            if (range === 'custom') {
+                startDateInput.disabled = false;
+                endDateInput.disabled = false;
+                // Opcional: Establecer las fechas en blanco o la fecha actual
+                endDateInput.value = new Date().toISOString().split('T')[0];
+            } else {
+                startDateInput.disabled = true;
+                endDateInput.disabled = true;
+
+                // Aplicar las fechas del rango rápido a los inputs (aunque estén deshabilitados, sirve para ver el rango aplicado)
+                const dates = getRangeDates(range);
+                startDateInput.value = dates.start;
+                endDateInput.value = dates.end;
+            }
+        }
+
+        // --- FUNCIONES AUXILIARES DE LÓGICA PURA ---
+        function limpiarYMostrarCargaModal(mostrarCarga = true) {
+            const contenidoModal = profileModal.querySelector('.profile-modal-content');
+            if (!contenidoModal) return;
+            document.getElementById('profile-paciente-id').value = '';
+            document.getElementById('profile-nombre').textContent = mostrarCarga ? 'Cargando...' : '';
+            document.getElementById('profile-correo').textContent = '...';
+            document.getElementById('profile-fecha-nacimiento').textContent = '...';
+            document.getElementById('profile-edad').textContent = '...';
+            document.getElementById('profile-glucosa').textContent = '...';
+            document.getElementById('profile-estado').textContent = '...';
+            document.getElementById('profile-estado').className = 'profile-data-value';
+            document.getElementById('profile-altura').textContent = '...';
+            document.getElementById('profile-peso').textContent = '...';
+            const existingError = contenidoModal.querySelector('#modal-load-error');
+            if (existingError) existingError.remove();
+
+            // Ocultar el contenedor de historial al limpiar
+            if (window.graphContainer) window.graphContainer.style.display = 'none';
+
+            // Limpiar y establecer la fecha por defecto de los filtros (Personalizado)
+            document.getElementById('filter-start-date').value = '';
+            document.getElementById('filter-end-date').value = new Date().toISOString().split('T')[0];
+
+            // Seleccionar el filtro 'week' por defecto y actualizar UI
+            document.getElementById('filter-week').checked = true;
+            handleFilterChange('week');
+        }
+
+        function calcularEdad(fechaNacimiento) {
+            if (!fechaNacimiento) return null; try { const hoy = new Date(); const cumple = new Date(fechaNacimiento); let edad = hoy.getFullYear() - cumple.getFullYear(); const mesDiff = hoy.getMonth() - cumple.getMonth(); if (mesDiff < 0 || (mesDiff === 0 && hoy.getDate() < cumple.getDate())) { edad--; } return edad >= 0 ? edad : null; } catch (e) { console.error("Error calculando edad:", e); return null; }
+        }
+        function getEstadoGlucosaDetallado(glucosa) {
+            const valor = (typeof glucosa === 'string') ? parseFloat(glucosa) : glucosa;
+            if (valor === null || valor === undefined || isNaN(valor)) return { texto: 'Desconocido', clase: '' };
+            if (valor < 70) return { texto: 'Bajo (Hipoglucemia)', clase: 'status-low' };
+            if (valor <= 140) return { texto: 'Normal', clase: 'status-ok' };
+            if (valor <= 180) return { texto: 'Elevado', clase: 'status-elevated' };
+            return { texto: 'Alto (Hiperglucemia)', clase: 'status-high' };
+        }
+        function formatearFechaSimple(fechaISO) {
+            if (!fechaISO || typeof fechaISO !== 'string') return 'N/A';
+            try {
+                const partes = fechaISO.split('-');
+                if (partes.length === 3) {
+                    return `${partes[2]}/${partes[1]}/${partes[0]}`;
+                }
+                return fechaISO;
+            } catch (e) {
+                console.error("Error formateando fecha:", fechaISO, e);
+                return fechaISO;
+            }
+        }
+        
+        window.limpiarYMostrarCargaModal = limpiarYMostrarCargaModal;
+        window.calcularEdad = calcularEdad;
+        window.getEstadoGlucosaDetallado = getEstadoGlucosaDetallado;
+        window.formatearFechaSimple = formatearFechaSimple; 
+
+        // Exponer init para que el SPA pueda inicializar esta vista después de inyectar el HTML
+        window.initMisPacientes = initMisPacientes;
+
+        // Auto inicializar cuando la página se carga de forma independiente (standalone)
+        document.addEventListener('DOMContentLoaded', () => {
+            if (document.getElementById('pacientes-container')) {
+                try { initMisPacientes(); } catch (e) { console.error('initMisPacientes error:', e); }
+            }
+
+
+        });
+    }
+    </script>
+
+    <!--backendPacientes-->
+    <script>
+        // --- CONFIG SUPABASE ---
+// Reusar cliente global si ya fue inicializado por otro script.
+window.SUPABASE_URL = window.SUPABASE_URL || 'https://lxbjjvfrankabciuizsu.supabase.co';
+window.SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx4YmpqdmZyYW5rYWJjaXVpenN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NjU3NDIsImV4cCI6MjA3NDI0MTc0Mn0.2ZFjxl3LAeCoTd6_Th96ob_CuoFgo-o307VRjg28Qmo';
+window.supabaseClient = window.supabaseClient || supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+
+
+// --- PUENTES CON LA UI (wrappers perezosos para evitar dependencia del orden de carga) ---
+// Antes el código capturaba `window.*` al cargar el archivo; eso falla si
+// `script_pacientes.js` se ejecuta después (defer vs no-defer). Aquí exponemos
+// funciones que delegan a `window` en tiempo de ejecución.
+const mostrarPacientesUI = (...args) => {
+    if (typeof window.mostrarPacientesUI === 'function') return window.mostrarPacientesUI(...args);
+    console.warn('mostrarPacientesUI no inicializado aún');
+};
+const mostrarErrorListaUI = (...args) => {
+    if (typeof window.mostrarErrorListaUI === 'function') return window.mostrarErrorListaUI(...args);
+    console.warn('mostrarErrorListaUI no inicializado aún');
+};
+const llenarPerfilModalUI = (...args) => {
+    if (typeof window.llenarPerfilModalUI === 'function') return window.llenarPerfilModalUI(...args);
+    console.warn('llenarPerfilModalUI no inicializado aún');
+};
+const limpiarYMostrarCargaModalUI = (...args) => {
+    if (typeof window.limpiarYMostrarCargaModal === 'function') return window.limpiarYMostrarCargaModal(...args);
+    console.warn('limpiarYMostrarCargaModal no inicializado aún');
+};
+
+// Funciones auxiliares traídas del HTML para el modal (wrappers)
+const calcularEdadUI = (...args) => {
+    return (typeof window.calcularEdad === 'function') ? window.calcularEdad(...args) : null;
+};
+const getEstadoGlucosaDetalladoUI = (...args) => {
+    return (typeof window.getEstadoGlucosaDetallado === 'function') ? window.getEstadoGlucosaDetallado(...args) : { texto: 'Desconocido', clase: '' };
+};
+const formatearFechaSimpleUI = (...args) => {
+    return (typeof window.formatearFechaSimple === 'function') ? window.formatearFechaSimple(...args) : (args[0] || 'N/A');
+};
+
+// ------------------------------------------------------------------
+// --- LÓGICA DE NEGOCIO Y ACCESO A DATOS (BACKEND) ---
+// ------------------------------------------------------------------
+
+async function iniciarCargaDePacientes(doctorId) {
+    if (!doctorId) return;
+    const docId = parseInt(doctorId);
+    
+    const pacientesContainerUI = window.pacientesContainer;
+    const inactivosContainerUI = window.inactivosContainer;
+    const loadingElementUI = window.loadingElement;
+    const loadingInactivosUI = window.loadingInactivos;
+
+    if (!pacientesContainerUI || !inactivosContainerUI) {
+        console.error("Error: Elementos DOM de contenedores no encontrados.");
+        return;
+    }
+
+    if (loadingElementUI) loadingElementUI.style.display = 'block';
+    if (loadingInactivosUI) loadingInactivosUI.style.display = 'block';
+
+    await Promise.all([
+        cargarPacientes(pacientesContainerUI, false, docId), 
+        cargarPacientes(inactivosContainerUI, true, docId)  
+    ]).catch(err => {
+        console.error("Fallo al cargar una o ambas listas de pacientes:", err);
+    });
+}
+
+async function cargarPacientes(containerElement, loadInactive = false, doctorId) {
+    if (!containerElement || !doctorId) return; 
+    const docId = parseInt(doctorId);
+
+    try {
+        let query = supabaseClient
+            .from('paciente')
+            .select('id_paciente, nombre_completo, correo, ultima_medida_glucosa, activo')
+            .eq('id_doctor', docId);
+
+        if (loadInactive) {
+            query = query.eq('activo', false); 
+        } else {
+            query = query.not('activo', 'eq', false); 
+        }
+
+        const { data: pacientes, error } = await query
+            .order('nombre_completo', { ascending: true });
+
+        if (error) { throw error; }
+        
+        mostrarPacientesUI(pacientes, containerElement, loadInactive);
+
+    } catch (error) {
+        console.error(`Error al cargar la lista ${loadInactive ? 'inactiva' : 'activa'} de pacientes:`, error);
+        mostrarErrorListaUI(`Error al cargar pacientes: ${error.message}`, loadInactive);
+    }
+}
+
+async function cambiarEstadoPaciente(pacienteId, esActivoActual) {
+    const nuevoEstado = !esActivoActual; 
+    const doctorId = parseInt(localStorage.getItem('doctorId'));
+
+    try {
+        const { error } = await supabaseClient
+            .from('paciente')
+            .update({ activo: nuevoEstado })
+            .eq('id_paciente', pacienteId);
+
+        if (error) { throw error; }
+
+        await iniciarCargaDePacientes(doctorId); 
+
+    } catch (error) {
+        console.error('Error al cambiar estado del paciente en DB:', error);
+        throw new Error(`Fallo en la base de datos al cambiar el estado: ${error.message}`);
+    }
+}
+
+/**
+ * Muestra el modal de perfil de un paciente. Solo carga datos, no grafica.
+ */
+async function mostrarPerfilModal(pacienteId) { 
+    const profileModalUI = window.profileModal;
+    const graphContainer = window.graphContainer;
+    
+    if (!profileModalUI) return;
+    
+    limpiarYMostrarCargaModalUI(true);
+    profileModalUI.showModal();
+    
+    const currentDoctorId = localStorage.getItem('doctorId');
+
+    try {
+        // Carga datos del paciente
+        const { data: paciente, error: pacienteError } = await supabaseClient
+            .from('paciente')
+            .select('id_paciente, nombre_completo, fecha_nacimiento, correo, ultima_medida_glucosa, altura, peso, id_doctor, activo')
+            .eq('id_paciente', pacienteId)
+            .single();
+
+        if (pacienteError) { throw pacienteError; }
+        if (!paciente || paciente.id_doctor != currentDoctorId) {
+            throw new Error("Paciente no encontrado o acceso no autorizado.");
+        }
+        
+        // Rellena la UI con los datos del paciente
+        llenarPerfilModalUI(paciente);
+        
+        // Ocultar el contenedor del gráfico ya que usaremos tablas en el PDF
+        if (graphContainer) graphContainer.style.display = 'none';
+
+    } catch (error) {
+        console.error("Error al cargar perfil en modal:", error);
+        if (graphContainer) graphContainer.style.display = 'none';
+        
+        profileModalUI.querySelector('#profile-nombre').textContent = 'Error al Cargar';
+        const errorP = document.createElement('p');
+        errorP.textContent = `Error: ${error.message}`;
+        errorP.style.color = 'red';
+        errorP.id = 'modal-load-error';
+        const modalContent = profileModalUI.querySelector('.profile-modal-content');
+        if(modalContent) modalContent.appendChild(errorP);
+    }
+}
+
+// ------------------------------------------------------------------
+// --- FUNCIÓN PARA DESCARGAR PDF (Implementando AutoTable con estilo) ---
+// ------------------------------------------------------------------
+
+/**
+ * Descarga los datos de un paciente en formato PDF, incluyendo la tabla de mediciones filtrada.
+ * @param {number} pacienteId - ID del paciente.
+ * @param {string} startDate - Fecha de inicio del filtro (YYYY-MM-DD o '').
+ * @param {string} endDate - Fecha de fin del filtro (YYYY-MM-DD o '').
+ */
+async function handleDescargarDatos(pacienteId, startDate, endDate) {
+    if (typeof window.jspdf === 'undefined' || typeof window.jspdf.jsPDF === 'undefined') {
+        alert("🚨 Error: La librería jsPDF no está cargada. Asegúrate de incluirla en el HTML.");
+        console.error("jsPDF no definido.");
+        return;
+    }
+
+    try {
+        // 1. Cargar datos del paciente
+        const { data: paciente, error: pacienteError } = await supabaseClient
+            .from('paciente')
+            .select('nombre_completo, fecha_nacimiento, correo, ultima_medida_glucosa, altura, peso, activo')
+            .eq('id_paciente', pacienteId)
+            .single();
+
+        if (pacienteError) { throw pacienteError; }
+        if (!paciente) { throw new Error("Paciente no encontrado."); }
+
+        // 2. Cargar historial de mediciones, APLICANDO FILTROS DE FECHA
+        let queryMediciones = supabaseClient
+            .from('mediciones')
+            .select('glucosa, peso, fecha_registro')
+            .eq('id_paciente', pacienteId)
+            .order('fecha_registro', { ascending: false });
+
+        let filtroTexto = "TODO EL HISTORIAL";
+
+        if (startDate) {
+            queryMediciones = queryMediciones.gte('fecha_registro', startDate);
+            filtroTexto = `DESDE ${formatearFechaSimpleUI(startDate)}`;
+        }
+        
+        if (endDate) {
+            // Se debe incluir la fecha de fin completa, por lo que a la fecha se le añade la hora de fin del día (23:59:59)
+            queryMediciones = queryMediciones.lte('fecha_registro', `${endDate}T23:59:59`);
+            if (filtroTexto !== "TODO EL HISTORIAL") {
+                filtroTexto += ` HASTA ${formatearFechaSimpleUI(endDate)}`;
+            } else {
+                filtroTexto = `HASTA ${formatearFechaSimpleUI(endDate)}`;
+            }
+        }
+        
+        const { data: mediciones, error: medicionesError } = await queryMediciones;
+
+        if (medicionesError) { 
+            console.warn("Advertencia: No se pudo cargar el historial de mediciones con filtro.", medicionesError);
+        }
+
+        // 3. Inicializar PDF
+        const doc = new window.jspdf.jsPDF(); 
+        let y = 15; 
+
+        // Generación de Datos Estáticos
+        const edad = calcularEdadUI(paciente.fecha_nacimiento);
+        const estadoGlucosaInfo = getEstadoGlucosaDetalladoUI(paciente.ultima_medida_glucosa);
+        const fechaNacimientoFormateada = paciente.fecha_nacimiento ? formatearFechaSimpleUI(paciente.fecha_nacimiento) : 'N/A';
+        const fechaActual = formatearFechaSimpleUI(new Date().toISOString().split('T')[0]);
+
+        doc.setFontSize(22); doc.text("Reporte de Paciente", 105, y, null, null, 'center'); y += 10;
+        doc.setFontSize(16); doc.text(paciente.nombre_completo || 'Paciente Desconocido', 105, y, null, null, 'center'); y += 10;
+        doc.setFontSize(10); doc.text(`Generado el: ${fechaActual}`, 105, y, null, null, 'center'); y += 15;
+        doc.line(20, y - 5, 190, y - 5); 
+        
+        // Datos Personales
+        doc.setFontSize(14); doc.text("Datos Personales", 20, y); y += 7;
+        doc.setFontSize(12);
+        doc.text("ID Paciente:", 20, y); doc.text(pacienteId.toString(), 65, y); y += 6;
+        doc.text("Correo Electrónico:", 20, y); doc.text(paciente.correo || 'N/A', 65, y); y += 6;
+        doc.text("Fecha Nacimiento:", 20, y); doc.text(fechaNacimientoFormateada, 65, y); y += 6;
+        doc.text("Edad:", 20, y); doc.text(edad !== null ? `${edad} años` : 'N/A', 65, y); y += 6;
+        doc.line(20, y - 5, 190, y - 5); 
+        
+        // Datos Médicos / Físicos
+        doc.setFontSize(14); doc.text("Datos Médicos y Físicos", 20, y); y += 7;
+        doc.setFontSize(12);
+        doc.text("Estado:", 20, y); doc.text(paciente.activo === false ? 'INACTIVO (Archivado)' : 'ACTIVO', 65, y); y += 6;
+        
+        // CORRECCIÓN DE ESPACIO
+        doc.text("ÚLTIMA Glucosa (Paciente):", 20, y); doc.text(paciente.ultima_medida_glucosa ? `${paciente.ultima_medida_glucosa} mg/dL` : 'Sin registro', 90, y); y += 6; 
+        
+        doc.text("Estado Glucosa:", 20, y); doc.text(estadoGlucosaInfo.texto, 65, y); y += 6;
+        doc.text("Altura:", 20, y); doc.text(paciente.altura ? `${(paciente.altura * 100).toFixed(0)} cm` : 'N/A', 65, y); y += 6;
+        doc.text("Peso:", 20, y); doc.text(paciente.peso ? `${paciente.peso} kg` : 'N/A', 65, y); y += 15;
+
+        // IMPLEMENTACIÓN DE AUTOTABLE PARA EL HISTORIAL
+        const medicionesFiltradas = mediciones || [];
+        
+        doc.setFontSize(14); 
+        doc.text("HISTORIAL DE MEDICIONES", 20, y); y += 7;
+        doc.setFontSize(10); 
+        doc.text(`Filtro Aplicado: ${filtroTexto} (${medicionesFiltradas.length} registros)`, 20, y); y += 5;
+
+
+        if (medicionesFiltradas.length > 0) {
+            
+            const tableData = medicionesFiltradas.map(m => {
+                const estado = getEstadoGlucosaDetalladoUI(m.glucosa);
+                return [
+                    m.fecha_registro ? formatearFechaSimpleUI(m.fecha_registro.split('T')[0]) + ' ' + m.fecha_registro.split('T')[1].substring(0, 5) : 'N/A', // Fecha y Hora
+                    `${m.glucosa} mg/dL`,
+                    m.peso ? `${m.peso} kg` : 'N/A',
+                    estado.texto
+                ];
+            });
+
+            doc.autoTable({
+                startY: y + 5,
+                head: [['Fecha y Hora', 'Glucosa', 'Peso', 'Estado']],
+                body: tableData,
+                theme: 'striped', 
+                headStyles: { 
+                    fillColor: [30, 144, 255], 
+                    textColor: [255, 255, 255], 
+                    fontStyle: 'bold'
+                },
+                alternateRowStyles: { 
+                    fillColor: [240, 248, 255] 
+                },
+                styles: {
+                    cellPadding: 3,
+                    fontSize: 10,
+                    valign: 'middle',
+                    halign: 'left'
+                },
+                columnStyles: {
+                    0: { cellWidth: 45 }, 
+                    1: { cellWidth: 35 }, 
+                    2: { cellWidth: 25 }, 
+                    3: { cellWidth: 45 }  
+                },
+                margin: { left: 20, right: 20 },
+                didDrawPage: (data) => {
+                    y = data.cursor.y; 
+                },
+                didParseCell: (data) => {
+                    if (data.section === 'body' && data.column.index === 3) { 
+                        const estadoTexto = data.cell.text[0]; 
+                        if (estadoTexto.includes('Bajo')) {
+                            data.cell.styles.textColor = [0, 0, 255]; 
+                        } else if (estadoTexto.includes('Normal')) {
+                            data.cell.styles.textColor = [34, 139, 34]; 
+                        } else if (estadoTexto.includes('Elevado')) {
+                            data.cell.styles.textColor = [255, 165, 0]; 
+                        } else if (estadoTexto.includes('Alto')) {
+                            data.cell.styles.textColor = [255, 0, 0]; 
+                        }
+                        data.cell.styles.fontStyle = 'bold'; 
+                    }
+                }
+            });
+            y = doc.autoTable.previous.finalY + 10; 
+        } else {
+            doc.setFontSize(12);
+            doc.text("No se encontró historial de mediciones para el rango de fechas seleccionado.", 20, y);
+            y += 10;
+        }
+
+        // 4. Guardar el PDF (inicia la descarga)
+        const fileName = `Reporte_${paciente.nombre_completo.replace(/\s/g, '_')}_${pacienteId}.pdf`;
+        doc.save(fileName);
+        alert(`✅ Se está descargando el archivo: ${fileName}`);
+
+    } catch (error) {
+        console.error("Error al generar o descargar el PDF:", error);
+        alert(`❌ Error al intentar descargar el PDF: ${error.message}.`);
+    }
+}
+
+
+// ------------------------------------------------------------------
+// --- EXPOSICIÓN GLOBAL (Para que mis_pacientes.html pueda llamarlas) ---
+// ------------------------------------------------------------------
+window.iniciarCargaDePacientes = iniciarCargaDePacientes;
+window.cambiarEstadoPaciente = cambiarEstadoPaciente;
+window.mostrarPerfilModal = mostrarPerfilModal;
+// EXPOSICIÓN DE LA FUNCIÓN ACTUALIZADA
+window.handleDescargarDatos = handleDescargarDatos;
+
+
+//Para el modal de notas en pacientes.html
+document.addEventListener('DOMContentLoaded', async () => {
+    // ... (tus referencias existentes) ...
+    const notesModal = document.getElementById('notes-modal-dialog');
+    const closeNotesBtn = notesModal ? notesModal.querySelector('.close-btn-dialog') : null;
+    const notesForm = notesModal ? document.getElementById('notes-form') : null;
+    const notesTitle = notesModal ? document.getElementById('notes-modal-title') : null;
+    const pacientesContainer = document.getElementById('pacientes-container'); // Contenedor padre
+
+    // ----------------------------------------------------
+    // FUNCIÓN DE CONTROL DEL MODAL DE NOTAS
+    // ----------------------------------------------------
+
+    function openNotesModal(pacienteId, pacienteNombre) {
+        if (notesModal && notesModal.showModal) {
+            if (notesTitle) {
+                notesTitle.textContent = `Notas para ${pacienteNombre}`;
+            }
+            notesModal.setAttribute('data-current-patient-id', pacienteId); 
+            notesModal.showModal();
+            // ... (limpiar y enfocar el formulario) ...
+        }
+    }
+
+    function closeNotesModal() {
+        if (notesModal && notesModal.close) {
+            notesModal.close();
+        }
+    }
+
+    // ----------------------------------------------------
+    // 1. SOLUCIÓN CLAVE: DELEGACIÓN DE EVENTOS EN EL CONTENEDOR
+    // ----------------------------------------------------
+
+    if (pacientesContainer && notesModal) {
+        // Escuchamos los clics en el contenedor padre que existe desde el inicio.
+        pacientesContainer.addEventListener('click', (e) => {
+            // Buscamos si el elemento clickeado o su padre más cercano tiene la clase del botón de notas
+            const addNoteBtn = e.target.closest('.btn-add-note');
+
+            if (addNoteBtn) {
+                e.preventDefault();
+                
+                // Obtenemos el ID y el nombre directamente del botón o de la tarjeta padre
+                // Asumimos que el ID está en la tarjeta o en el botón (por tu ajuste)
+                const patientId = addNoteBtn.getAttribute('data-paciente-id'); 
+                const tarjetaPadre = addNoteBtn.closest('.patient-card');
+                
+                // El nombre completo está en el <h3>
+                const nombreCompleto = tarjetaPadre ? tarjetaPadre.querySelector('h3').textContent : 'Paciente Desconocido'; 
+
+                // Si el ID se obtuvo correctamente, abrimos el modal
+                if (patientId) {
+                    openNotesModal(patientId, nombreCompleto);
+                } else {
+                    console.error("No se pudo obtener el ID del paciente.");
+                }
+            }
+        });
+    }
+
+    // 2. Listener para cerrar el modal de notas
+    if (closeNotesBtn) {
+        closeNotesBtn.addEventListener('click', closeNotesModal);
+    }
+    
+    // 3. Listener para el envío del formulario (Cerrar después de guardar)
+    if (notesForm) {
+        notesForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            console.log("Simulando guardar nota...");
+            closeNotesModal(); 
+        });
+    }
+});
+    </script>
+
+    <script src="../JS/backendMenu.js" type="module"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/intro.min.js"></script>
+
+    <script src="../JS/tour.js"></script>
+    <script src="../JS/dashboard.js"></script>
+    <script src="../JS/modal.js" type="module"></script>
+
+    <!--Pacientes-->
+    <script src="../JS/scripts/script_pacientes.js" defer></script>
+    <script src="../JS/backendPacientes.js"></script>
+
+    <script src="../JS/scripts/script_dietas.js" defer></script>
+    <script src="../JS/backendDietas.js"></script>
+
+    <script src="../JS/scripts/script_convenios.js" defer></script>
+    <script src="../JS/backendConvenios.js"></script>
+
+    <script src="../JS/scripts/script_recipe.js" defer></script>
+    <script src="../JS/backendRecetas.js"></script>
+    </html>
+</body>

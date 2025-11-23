@@ -1,0 +1,378 @@
+body{
+    margin: 0;
+    padding: 0;
+    background-color: #f0f7f4;
+    font-family: 'SF Pro Display';
+    font-weight: 200;
+}
+
+.sidebar-container {
+    display: flex; 
+    min-height: 100vh;
+}
+
+.sidebar {
+    position: fixed; 
+    top: 0;
+    left: 0;
+    bottom: 0;
+    background-color: #ffffff; 
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+    padding: 10px 0;
+    z-index: 100;
+    overflow-x: hidden; 
+    width: 60px; 
+    transition: width 0.3s ease; 
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+}
+
+.nav-link, .user-profile {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    white-space: nowrap; 
+    color: #444;
+    text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.nav-link:hover {
+    background-color: #E3F2FD; 
+    color: #2196F3;
+}
+
+.nav-icon {
+    font-size: 1.2em;
+    min-width: 30px; 
+    text-align: center;
+}
+
+.nav-text {
+    opacity: 0; 
+    visibility: hidden;
+    margin-left: 15px;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.sidebar-toggle-btn {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 101; 
+    cursor: pointer;
+    font-size: 1.5em;
+    color: #2196F3;
+    width: 30px; 
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+}
+
+.main-content {
+    margin-left: 60px; 
+    flex-grow: 1; 
+    padding: 20px;
+    transition: margin-left 0.3s ease; 
+}
+
+.sidebar-toggle-input:checked ~ .sidebar {
+    width: 250px; 
+}
+
+.sidebar-toggle-input:checked ~ .sidebar .nav-text {
+    opacity: 1;
+    visibility: visible;
+}
+
+.sidebar-toggle-input:checked ~ .main-content {
+    margin-left: 250px;
+}
+
+.paciente-dialog, .create-recipe-dialog, .settings {
+    border: none;
+    border-radius: 15px; 
+    padding: 0; 
+    width: 90%;
+    max-width: 650px; 
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.paciente-dialog::backdrop,
+.create-recipe-dialog::backdrop,
+.settings::backdrop {
+    background-color: rgba(0, 0, 0, 0.6);
+    transition: opacity 0.3s ease-out;
+}
+
+.close-btn-dialog {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    color: #999;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close-btn-dialog:hover {
+    color: #444;
+}
+
+.modal-content {
+    display: flex;
+    flex-direction: column; 
+    background-color: white;
+    padding: 40px;
+    height: auto; 
+}
+
+#new-paciente-form {
+    display: flex; 
+    flex-direction: column; 
+    gap: 15px; 
+    width: 100%; 
+    padding: 0 10px; 
+}
+
+.modal-content .main-title {
+    color: #1565C0; 
+    margin-bottom: 5px;
+    font-size: 1.8em; 
+}
+
+.modal-content .subtitle {
+    color: #64B5F6; 
+    margin-bottom: 25px;
+    font-size: 1em;
+}
+
+label {
+    font-weight: bold;
+    color: #1565C0;
+    margin-bottom: 8px;
+    font-size: 0.95em;
+    text-align: left;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="date"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #E3F2FD; /* Borde azul muy claro */
+    border-radius: 8px; /* Bordes redondeados */
+    background-color: #fcfdff; /* Fondo muy sutil */
+    color: #333;
+    font-size: 1em;
+    box-sizing: border-box; 
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus {
+    border-color: #2196F3; /* Borde se vuelve azul primario */
+    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.2); 
+    outline: none;
+}
+
+button{
+    display: block;
+    width: 95%;
+    padding: 12px;
+    height: auto;
+    margin: 10px 0;
+    border: none;
+    border-radius: 8px; 
+    background-color: #2196F3;
+    color: white;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: background-color 0.3s;
+}
+
+/* Evitar afectar imágenes globales (como tiles de Leaflet). Limitar estilos del avatar a la barra lateral */
+.nav-link img,
+.user-profile img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+ul{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+ .appointments-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            max-width: 400px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            z-index: 1000;
+            overflow: hidden;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(120%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .notification-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notification-header h3 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .notification-close {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .notification-close:hover {
+            background: rgba(255,255,255,0.2);
+            transform: rotate(90deg);
+        }
+
+        .appointments-list {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        .appointment-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            transition: all 0.3s;
+        }
+
+        .appointment-item:hover {
+            background: #f8f9fa;
+        }
+
+        .appointment-item:last-child {
+            border-bottom: none;
+        }
+
+        .appointment-time {
+            font-size: 14px;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .appointment-patient {
+            font-size: 15px;
+            color: #333;
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+
+        .appointment-status {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .appointment-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .badge-today {
+            background: #ffeaa7;
+            color: #d63031;
+        }
+
+        .badge-upcoming {
+            background: #dfe6e9;
+            color: #2d3436;
+        }
+
+        .no-appointments {
+            padding: 30px 20px;
+            text-align: center;
+            color: #999;
+        }
+
+        .no-appointments svg {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 10px;
+            opacity: 0.3;
+        }
+
+        /* Badge de notificación en el botón de citas */
+        .notification-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #d63031;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+        }
+
+        .nav-link {
+            position: relative;
+        }

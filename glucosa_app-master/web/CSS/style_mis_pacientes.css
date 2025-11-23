@@ -1,0 +1,355 @@
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    margin: 0;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+.header {
+    padding: 10px 20px;
+    background-color: #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.header h2 {
+    margin: 0;
+    color: #343a40;
+    font-size: 1.5em;
+}
+
+.header button {
+    padding: 8px 15px;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+    font-size: 0.9em;
+}
+
+.header button:hover {
+    background-color: #5a6268;
+}
+
+.header button:disabled {
+    background-color: #adb5bd;
+    cursor: not-allowed;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.patient-card {
+    position: relative;
+    background-color: #f0f7f4;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-left: 5px solid #007bff;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.patient-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.patient-card.inactive {
+    border-left-color: #dc3545;
+    opacity: 0.8;
+}
+
+.patient-card h3 {
+    margin-top: 0;
+    color: #0056b3;
+    font-size: 1.2em;
+    word-break: break-word;
+}
+
+.patient-card.inactive h3 {
+    color: #dc3545;
+}
+
+.patient-card p {
+    margin: 8px 0;
+    color: #495057;
+    font-size: 0.95em;
+    line-height: 1.5;
+    flex-grow: 1;
+    word-break: break-word;
+}
+
+.data-highlight {
+    font-weight: bold;
+    color: #17a2b8;
+}
+
+.patient-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.view-profile-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: bold;
+    transition: background-color 0.2s;
+    flex-grow: 1;
+}
+
+.view-profile-btn:hover {
+    background-color: #0056b3;
+}
+
+.change-status-btn {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: bold;
+    transition: background-color 0.2s;
+    flex-grow: 1;
+}
+
+.change-status-btn.reactivate {
+    background-color: #28a745;
+}
+
+.change-status-btn:hover {
+    background-color: #5a6268;
+}
+
+.change-status-btn.reactivate:hover {
+    background-color: #1e7e34;
+}
+
+.loading,
+.error {
+    text-align: center;
+    padding: 40px 20px;
+    font-size: 1.1em;
+    color: #6c757d;
+    grid-column: 1 / -1;
+}
+
+.inactive-section {
+    padding: 20px;
+    max-width: 100%;
+    margin-top: 30px;
+    background-color: #fcebeb;
+    border-top: 2px solid #dc3545;
+}
+
+.inactive-section h2 {
+    color: #dc3545;
+    border-bottom: 1px solid #dc3545;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+/* Estilos Modal Perfil */
+dialog {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);
+    padding: 0;
+    max-width: 550px;
+    width: 90%;
+}
+
+dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px);
+}
+
+.profile-modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    position: relative;
+}
+
+.close-profile-modal-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 1.8em;
+    color: #aaa;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+}
+
+.close-profile-modal-btn:hover {
+    color: #555;
+}
+
+.profile-modal-content h2 {
+    margin-top: 0;
+    color: #343a40;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+    font-size: 1.6em;
+    margin-bottom: 20px;
+    word-break: break-word;
+}
+
+/* Estilo mejorado para filas de datos en modal */
+.profile-data-row {
+    margin: 14px 0;
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    line-height: 1.6;
+}
+
+.profile-data-label {
+    font-weight: bold;
+    color: #333;
+    width: 170px;
+    flex-shrink: 0;
+    margin-right: 10px;
+}
+
+.profile-data-value {
+    color: #555;
+    word-break: break-word;
+    flex-grow: 1;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 25px 0;
+}
+
+/* Clases estado glucosa */
+.status-ok {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.status-low {
+    color: #007bff;
+    font-weight: bold;
+}
+
+.status-high {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+.status-elevated {
+    color: #ffc107;
+    font-weight: bold;
+    text-shadow: 1px 1px 1px #eee;
+}
+
+/* Nuevo estilo para el botón de descarga */
+#download-pdf-btn {
+    background-color: #dc3545;
+    /* Rojo, para destacar */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    transition: background-color 0.2s;
+    width: 100%;
+    margin-top: 20px;
+}
+
+#download-pdf-btn:hover {
+    background-color: #c82333;
+}
+
+/* Estilos para los Radio Buttons del filtro */
+.filter-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fcfcfc;
+}
+
+.filter-option label {
+    font-weight: normal;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.date-input-group {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+.date-input-group label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.date-input-group input[type="date"] {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Estilo para inputs deshabilitados */
+.date-input-group input[type="date"]:disabled {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+}
+
+.patient-card .btn-add-note{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;   
+    border-radius: 50%;
+    padding: auto;
+    font-size: 1.2em;
+    cursor: pointer;
+    z-index: 10;
+    transition: background-color 0.2s;
+}
+
+.patient-card .btn-add-note:hover {
+    background-color: #e2e6ea;
+}
+
+@media (max-width: 768px) {
+    .patient-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+}

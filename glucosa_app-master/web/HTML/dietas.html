@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan de Dietas - Team Overview</title>
+    <link rel="stylesheet" href="../CSS/style_dietas.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🍎 Plan de Dietas</h1>
+            <a href="main_menu.html" class="btn-back">← Volver al Menú</a>
+        </div>
+
+        <!-- Selector de Paciente -->
+        <div class="selector-patient-container">
+            <label for="patients-options" class="selector-label">👤 Seleccionar Paciente:</label>
+            <select id="patients-options" class="patient-select-control" required>
+                <option value="">-- Seleccione un paciente --</option>
+            </select>
+        </div>
+
+        <!-- Grid de Contenido -->
+        <div class="content-grid">
+            <!-- Panel de Nueva Dieta -->
+            <div class="new-diet-container">
+                <section class="new-diet-panel">
+                    <h2 class="panel-subtitle">✚ Crear Plan de Dieta</h2>
+                    <form id="new-diet-form" class="new-diet-form">
+                        <!-- Desayuno -->
+                        <div class="meal-section">
+                            <h3>🌅 Desayuno</h3>
+                            <label for="breakfast">Alimentos:</label>
+                            <textarea id="breakfast" name="breakfast" 
+                                      placeholder="Ej: 1 taza de avena, 1 manzana, café sin azúcar" required></textarea>
+                        </div>
+
+                        <!-- Comida -->
+                        <div class="meal-section">
+                            <h3>🍽️ Comida</h3>
+                            <label for="lunch">Alimentos:</label>
+                            <textarea id="lunch" name="lunch" 
+                                      placeholder="Ej: Pechuga a la plancha, ensalada verde, arroz integral" required></textarea>
+                        </div>
+
+                        <!-- Cena -->
+                        <div class="meal-section">
+                            <h3>🌙 Cena</h3>
+                            <label for="dinner">Alimentos:</label>
+                            <textarea id="dinner" name="dinner" 
+                                      placeholder="Ej: Pescado al vapor, verduras, 1 porción de fruta" required></textarea>
+                        </div>
+
+                        <button type="submit" id="save-diet-btn">💾 Guardar Plan de Dieta</button>
+                        <p id="form-message" class="message" style="display: none;"></p>
+                    </form>
+                </section>
+            </div>
+
+            <!-- Historial de Dietas -->
+            <div class="diet-history-container">
+                <h2>📋 Historial de Dietas del Paciente</h2>
+                <ul id="diet-list" class="diet-list">
+                    <li class="loading">Seleccione un paciente para ver sus dietas...</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Los scripts se cargan desde el contenedor principal (main_menu) para soporte SPA -->
+</body>
+</html>
